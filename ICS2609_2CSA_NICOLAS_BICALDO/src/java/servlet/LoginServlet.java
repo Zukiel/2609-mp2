@@ -11,9 +11,9 @@ public class LoginServlet extends HttpServlet {
     private String dbUrl, dbUser, dbPass, dbDriver;
 
     public void init() throws ServletException {
-        ServletContext sc = getServletContext();
-        dbUrl = sc.getInitParameter("dbUrl").concat(sc.getInitParameter("dbName"));
-        dbUser = sc.getInitParameter("dbUsername");
+        ServletConfig sc = getServletConfig();
+        dbUrl = sc.getInitParameter("dbUrl");
+        dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
         try { 
@@ -24,22 +24,17 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServletException{
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
         if ((user == null || user.trim().isEmpty()) && (pass == null || pass.trim().isEmpty())) {
-            try { 
-                throw new NullValueException("Empty Fields"); 
-            } 
-            catch (NullValueException e) {
-                response.sendRedirect("noLoginCredentials.jsp"); 
-                return; 
-            }
+            throw new NullValueException("Empty Fields"); 
         }
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM USERS WHERE EMAIL = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM USERS WHERE USERNAME = ?");
             ps.setString(1, user);
             ResultSet rs = ps.executeQuery();
 
@@ -58,7 +53,7 @@ public class LoginServlet extends HttpServlet {
             }
         } 
         catch (SQLException e) { 
-            e.printStackTrace(); 
+            throw new ServletException("Database Connection Error: " + e.getMessage(), e);
         }
     }
 }
