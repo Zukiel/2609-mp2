@@ -21,29 +21,17 @@
                 h2 { font-size: 3.5rem; margin-top: 0; margin-bottom: 1rem; }
                 h3 { font-size: 2rem; margin-bottom: 0.5rem; }
                 
-                .navbar {
+                .header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     padding: 2rem 5%;
                 }
-                .brand {
+                .title {
                     font-size: 1.2rem;
                     letter-spacing: 3px;
                     text-transform: uppercase;
                     font-weight: normal;
-                }
-                .nav-links a {
-                    color: #555;
-                    text-decoration: none;
-                    margin-left: 2rem;
-                    font-size: 0.9rem;
-                }
-                .nav-links a:hover { color: #000; border-bottom: 1px solid #000; }
-                .container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 4rem 5%;
                 }
                 
                 button, .btn {
@@ -81,10 +69,8 @@
                 legend { font-weight: bold; padding: 0 10px; }
             </style>
             
-            <header class="navbar">
-                <div class="brand">Header</div>
-                <div class="nav-links">
-                </div>
+            <header class="header">
+                <div class="title">Header</div>
             </header>
             <div class="container">
             ]]>
@@ -110,32 +96,51 @@
         <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
         <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
-    </servlet-mapping>
-    
     <servlet>
         <servlet-name>CreateDataServlet</servlet-name>
         <servlet-class>servlet.CreateDataServlet</servlet-class>
+        <init-param><param-name>dbUrl</param-name><param-value>jdbc:mysql://localhost:1527/LoginDB</param-value></init-param>
+        <init-param><param-name>dbUser</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
     <servlet>
         <servlet-name>InsertServlet</servlet-name>
         <servlet-class>servlet.InsertServlet</servlet-class>
+        <init-param><param-name>dbUrl</param-name><param-value>jdbc:mysql://localhost:1527/LoginDB</param-value></init-param>
+        <init-param><param-name>dbUser</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
     <servlet>
         <servlet-name>DeleteServlet</servlet-name>
         <servlet-class>servlet.DeleteServlet</servlet-class>
+        <init-param><param-name>dbUrl</param-name><param-value>jdbc:mysql://localhost:1527/LoginDB</param-value></init-param>
+        <init-param><param-name>dbUser</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
     <servlet>
         <servlet-name>UpdateServlet</servlet-name>
         <servlet-class>servlet.UpdateServlet</servlet-class>
+        <init-param><param-name>dbUrl</param-name><param-value>jdbc:mysql://localhost:1527/LoginDB</param-value></init-param>
+        <init-param><param-name>dbUser</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>servlet.LogoutServlet</servlet-class>
+        <init-param><param-name>dbUrl</param-name><param-value>jdbc:mysql://localhost:1527/LoginDB</param-value></init-param>
+        <init-param><param-name>dbUser</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbPassword</param-name><param-value>app</param-value></init-param>
+        <init-param><param-name>dbDriver</param-name><param-value>org.apache.derby.jdbc.ClientDriver</param-value></init-param>
     </servlet>
     
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateDataServlet</servlet-name>
         <url-pattern>/CreateDataServlet</url-pattern>
