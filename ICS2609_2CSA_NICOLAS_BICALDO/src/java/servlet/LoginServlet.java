@@ -6,8 +6,8 @@ import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-
 public class LoginServlet extends HttpServlet {
+
     private String dbUrl, dbUser, dbPass, dbDriver;
 
     public void init() throws ServletException {
@@ -16,21 +16,20 @@ public class LoginServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
-        try { 
+        try {
             Class.forName(dbDriver);
-        } 
-        catch (Exception e) { 
-            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServletException{
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
         if ((user == null || user.trim().isEmpty()) && (pass == null || pass.trim().isEmpty())) {
-            throw new NullValueException("Empty Fields"); 
+            throw new NullValueException("Empty Fields");
         }
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
@@ -39,8 +38,11 @@ public class LoginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) {
-                if (pass.isEmpty()) response.sendRedirect("error_1.jsp");
-                else response.sendRedirect("error_3.jsp");
+                if (pass == null || pass.trim().isEmpty()) {
+                    response.sendRedirect("error_1.jsp");
+                } else {
+                    response.sendRedirect("error_3.jsp");
+                }
             } else {
                 if (rs.getString("password").equals(pass)) {
                     HttpSession session = request.getSession();
@@ -51,10 +53,8 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("error_2.jsp");
                 }
             }
-        } 
-        catch (SQLException e) { 
+        } catch (SQLException e) {
             throw new ServletException("Database Connection Error: " + e.getMessage(), e);
         }
     }
 }
-

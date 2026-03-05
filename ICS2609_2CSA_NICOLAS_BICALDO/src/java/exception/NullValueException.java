@@ -1,6 +1,8 @@
 package exception;
 
-public class NullValueException extends Exception { 
+import javax.servlet.ServletException;
+
+public class NullValueException extends ServletException { 
     public NullValueException(String s) { 
         super(s); 
     } 
