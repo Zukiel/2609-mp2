@@ -6,28 +6,37 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 public class DeleteServlet extends HttpServlet {
+    private String dbUrl, dbUser, dbPass, dbDriver;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ServletContext sc = getServletContext();
-        String dbUrl = sc.getInitParameter("dbUrl").concat(sc.getInitParameter("dbName"));
-        String dbUser = sc.getInitParameter("dbUsername");
-        String dbPass = sc.getInitParameter("dbPassword");
-        String dbDriver = sc.getInitParameter("dbDriver");
-        try {
-            Class.forName(dbDriver);
-            String target = request.getParameter("user");
-            String current = (String) request.getSession().getAttribute("user");
-            if (!target.equals(current)) {
-                try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-                    PreparedStatement ps = conn.prepareStatement("DELETE FROM USERS WHERE EMAIL=?");
-                    ps.setString(1, target);
-                    ps.executeUpdate();
-                } catch (Exception e) {
-                }
+    public void init() throws ServletException {
+        ServletConfig sc = getServletConfig();
+        dbUrl = sc.getInitParameter("dbUrl");
+        dbUser = sc.getInitParameter("dbUser");
+        dbPass = sc.getInitParameter("dbPassword");
+        dbDriver = sc.getInitParameter("dbDriver");
+        try { Class.forName(dbDriver); } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String targetEmail = request.getParameter("email");
+        HttpSession session = request.getSession(false);
+        String currentUser = (String) session.getAttribute("user");
+
+        // Rule: Cannot delete own record
+        if (targetEmail != null && !targetEmail.equals(currentUser)) {
+            Connection conn = null;
+            PreparedStatement ps = null;
+            try {
+                conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+                ps = conn.prepareStatement("DELETE FROM USERS WHERE EMAIL = ?");
+                ps.setString(1, targetEmail);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new ServletException(e);
+            } finally {
+                try { if (ps != null) ps.close(); if (conn != null) conn.close(); } catch (SQLException e) {}
             }
-            response.sendRedirect("success.jsp");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        response.sendRedirect("DashboardServlet");
     }
 }

@@ -1,10 +1,10 @@
 package servlet;
 
-import exception.*;
 import java.io.*;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import exception.*;
 
 public class LoginServlet extends HttpServlet {
 
@@ -16,45 +16,66 @@ public class LoginServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
+        
         try {
             Class.forName(dbDriver);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Driver not found", e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
-        if ((user == null || user.trim().isEmpty()) && (pass == null || pass.trim().isEmpty())) {
-            throw new NullValueException("Empty Fields");
+        if (isInvalid(user) && isInvalid(pass)) {
+            throw new NullValueException("Missing Fields");
         }
-
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM USERS WHERE USERNAME = ?");
+        
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM USERS WHERE email = ?")) {
+            
             ps.setString(1, user);
-            ResultSet rs = ps.executeQuery();
-
-            if (!rs.next()) {
-                if (pass == null || pass.trim().isEmpty()) {
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                boolean validUser = rs.next();
+                
+                if (!validUser && isInvalid(pass)) {
                     response.sendRedirect("error_1.jsp");
-                } else {
-                    response.sendRedirect("error_3.jsp");
+                    return;
                 }
-            } else {
-                if (rs.getString("password").equals(pass)) {
+                if(!validUser)
+                {
+                    response.sendRedirect("error_3.jsp");
+                    return;
+                }
+                
+
+                String storedPass = rs.getString("password");
+                String role = rs.getString("userrole");
+                
+                if (storedPass.equals(pass)) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
-                    session.setAttribute("role", rs.getString("role"));
-                    response.sendRedirect("success.jsp");
+                    session.setAttribute("role", role);
+                    response.sendRedirect("DashboardServlet");
+                    return;
                 } else {
-                    response.sendRedirect("error_2.jsp");
+                    throw new AuthenticationException("Incorrect Username and Password");
                 }
             }
         } catch (SQLException e) {
-            throw new ServletException("Database Connection Error: " + e.getMessage(), e);
+            throw new ServletException("Database error", e);
+        } catch (AuthenticationException e) {
+            response.sendRedirect("error_2.jsp");
+            return;
         }
+    }
+
+    private boolean isInvalid(String input) {
+        return input == null || input.trim().isEmpty();
     }
 }

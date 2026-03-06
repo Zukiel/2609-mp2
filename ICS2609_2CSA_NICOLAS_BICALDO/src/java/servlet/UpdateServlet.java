@@ -7,34 +7,57 @@ import javax.servlet.http.*;
 
 public class UpdateServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ServletContext sc = getServletContext();
-        String dbUrl = sc.getInitParameter("dbUrl").concat(sc.getInitParameter("dbName"));
-        String dbUser = sc.getInitParameter("dbUsername");
-        String dbPass = sc.getInitParameter("dbPassword");
-        String dbDriver = sc.getInitParameter("dbDriver");
+    private String dbUrl, dbUser, dbPass, dbDriver;
+
+    public void init() throws ServletException {
+        ServletConfig sc = getServletConfig();
+        dbUrl = sc.getInitParameter("dbUrl");
+        dbUser = sc.getInitParameter("dbUser");
+        dbPass = sc.getInitParameter("dbPassword");
+        dbDriver = sc.getInitParameter("dbDriver");
         try {
             Class.forName(dbDriver);
-            String target = request.getParameter("user");
-            String current = (String) request.getSession().getAttribute("user");
-            try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass)) {
-                PreparedStatement ps = conn.prepareStatement("UPDATE USERS SET EMAIL = ?, PASSWORD = ?, USERROLE = ? WHERE EMAIL=?");
-                String user = request.getParameter("e");
-                String role = request.getParameter("r");
-                ps.setString(1, user);
-                ps.setString(2, request.getParameter("p"));
-                ps.setString(3, role);
-                ps.executeUpdate();
-
-                if (target.equals(current)) {
-                    request.getSession().setAttribute("user", user);
-                    request.getSession().setAttribute("role", role);
-                }
-            } catch (Exception e) {
-            }
-            response.sendRedirect("success.jsp");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String oldEmail = request.getParameter("oldEmail"); // The ID to find the row
+        String newEmail = request.getParameter("email");    // The new value
+        String pass = request.getParameter("password");
+        String role = request.getParameter("role");
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+            // Update the row where the email matches the old one
+            ps = conn.prepareStatement("UPDATE USERS SET EMAIL = ?, PASSWORD = ?, USERROLE = ? WHERE EMAIL = ?");
+            ps.setString(1, newEmail);
+            ps.setString(2, pass);
+            ps.setString(3, role);
+            ps.setString(4, oldEmail);
+            ps.executeUpdate();
+
+            HttpSession session = request.getSession(false);
+            if (session != null && oldEmail.equals(session.getAttribute("user"))) {
+                session.setAttribute("user", newEmail);
+                session.setAttribute("role", role);
+            }
+            response.sendRedirect("DashboardServlet");
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+            }
         }
     }
 }
