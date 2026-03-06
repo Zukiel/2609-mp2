@@ -27,7 +27,13 @@ public class UpdateServlet extends HttpServlet {
         String newEmail = request.getParameter("email");    // The new value
         String pass = request.getParameter("password");
         String role = request.getParameter("role");
-
+        
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("error_session.jsp");
+            return;
+        }
+        
         Connection conn = null;
         PreparedStatement ps = null;
         try {
@@ -40,8 +46,7 @@ public class UpdateServlet extends HttpServlet {
             ps.setString(4, oldEmail);
             ps.executeUpdate();
 
-            HttpSession session = request.getSession(false);
-            if (session != null && oldEmail.equals(session.getAttribute("user"))) {
+            if (oldEmail.equals(session.getAttribute("user"))) {
                 session.setAttribute("user", newEmail);
                 session.setAttribute("role", role);
             }

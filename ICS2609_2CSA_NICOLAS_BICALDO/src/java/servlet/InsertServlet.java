@@ -21,6 +21,12 @@ public class InsertServlet extends HttpServlet {
         String email = request.getParameter("email");
         String pass = request.getParameter("password");
         String role = request.getParameter("role");
+        
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("error_session.jsp");
+            return;
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;

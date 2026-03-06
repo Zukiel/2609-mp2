@@ -1,4 +1,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+
+    HttpSession currentSession = request.getSession(false);
+    if (currentSession != null) {
+        currentSession.invalidate();
+    }
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,7 +18,7 @@
     <body>
         <%= application.getInitParameter("headerText")%>
 
-        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4rem;">
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 4rem;">
             <div style="flex: 1; min-width: 300px;">
                 <h2>Log in.</h2>
             </div>

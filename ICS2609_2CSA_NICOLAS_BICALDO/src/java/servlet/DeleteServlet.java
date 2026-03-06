@@ -22,6 +22,11 @@ public class DeleteServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         String currentUser = (String) session.getAttribute("user");
 
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("error_session.jsp");
+            return;
+        }
+
         // Rule: Cannot delete own record
         if (targetEmail != null && !targetEmail.equals(currentUser)) {
             Connection conn = null;

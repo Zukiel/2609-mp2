@@ -2,7 +2,7 @@
 <%
     // Ensure only admins can see this
     if (session.getAttribute("user") == null || !"admin".equalsIgnoreCase((String)session.getAttribute("role"))) {
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("error_session.jsp");
         return;
     }
     String emailToUpdate = request.getParameter("email");

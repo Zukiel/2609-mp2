@@ -1,6 +1,4 @@
-need css
-
-after css, test techincality
-- session destroyed pag nag back
-- cant access when not logged in
-- etc di ko na alam
+-added css to dash, errors, login
+-session destroyed kapag nagback
+-added js to revalidate page when enter (tanggalin nalang kung di pwede)
+-removed session caching 
