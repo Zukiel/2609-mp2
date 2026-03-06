@@ -79,7 +79,7 @@
             </style>
             
             <header class="header">
-                <div class="title">Header</div>
+                <div class="title">Machine Problem 2 - Authentication System</div>
             </header>
             <div class="container">
         ]]></param-value>
@@ -90,7 +90,7 @@
             <![CDATA[
         </div> 
         <footer style="text-align: center; padding: 3rem; color: #888; font-size: 0.8rem;">
-            <p>Footer</p>
+            <p>ICS2609 2CSA Nicolas, Lance - Bicaldo, Marquin</p>
         </footer>
         ]]></param-value>
     </context-param>

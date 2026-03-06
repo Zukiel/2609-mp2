@@ -21,14 +21,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Dashboard</title>
     
-    <script>
-        window.onpageshow = function(event) {
-            if (event.persisted) {
-                window.location.reload(); 
-            }
-        };
-    </script>
-    
     <style>
         /* Minimalist Table Styling to match your web.xml aesthetic */
         table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; margin-top: 1rem; }
