@@ -1,4 +1,6 @@
--added css to dash, errors, login
--session destroyed kapag nagback
--added js to revalidate page when enter (tanggalin nalang kung di pwede)
--removed session caching 
+- fixed code presentation
+- removed ai-like comments
+- generalized code formatting
+
+- new sql code for 5 admin 15 guest
+- 
