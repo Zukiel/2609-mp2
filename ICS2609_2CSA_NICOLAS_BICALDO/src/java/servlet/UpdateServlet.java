@@ -15,16 +15,17 @@ public class UpdateServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
+        
         try {
             Class.forName(dbDriver);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Driver not found", e);
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String oldEmail = request.getParameter("oldEmail"); // The ID to find the row
-        String newEmail = request.getParameter("email");    // The new value
+        String oldEmail = request.getParameter("oldEmail"); 
+        String newEmail = request.getParameter("email"); 
         String pass = request.getParameter("password");
         String role = request.getParameter("role");
         

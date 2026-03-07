@@ -14,7 +14,12 @@ public class DeleteServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
-        try { Class.forName(dbDriver); } catch (Exception e) { e.printStackTrace(); }
+        
+        try {
+            Class.forName(dbDriver);
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Driver not found", e);
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,7 +32,7 @@ public class DeleteServlet extends HttpServlet {
             return;
         }
 
-        // Rule: Cannot delete own record
+        //Cannot delete own record
         if (targetEmail != null && !targetEmail.equals(currentUser)) {
             Connection conn = null;
             PreparedStatement ps = null;

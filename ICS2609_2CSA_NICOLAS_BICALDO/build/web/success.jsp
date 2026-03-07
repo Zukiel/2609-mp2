@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*" %>
 <%
-    // Prevent Back Button Access
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
@@ -22,14 +21,12 @@
     <title>Dashboard</title>
     
     <style>
-        /* Minimalist Table Styling to match your web.xml aesthetic */
         table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; margin-top: 1rem; }
         th, td { padding: 16px 10px; text-align: left; border-bottom: 1px solid #eee; }
         th { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: #555; font-weight: 600; }
         .action-links a { margin-right: 10px; font-size: 0.7rem; padding: 8px 16px; border-width: 1px; }
         .view-only { color: #aaa; font-style: italic; font-size: 0.85rem; }
         
-        /* Form labels matching your login page */
         .form-label { display: block; font-size: 0.75rem; color: #555; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; font-weight: bold; }
     </style>
 </head>

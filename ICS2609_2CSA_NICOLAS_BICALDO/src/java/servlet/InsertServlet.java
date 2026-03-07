@@ -14,7 +14,12 @@ public class InsertServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
-        try { Class.forName(dbDriver); } catch (Exception e) { e.printStackTrace(); }
+        
+        try {
+            Class.forName(dbDriver);
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Driver not found", e);
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +42,7 @@ public class InsertServlet extends HttpServlet {
             ps.setString(2, pass);
             ps.setString(3, role);
             ps.executeUpdate();
-            // Redirect to Controller to refresh data
+            //refresh data
             response.sendRedirect("DashboardServlet"); 
         } catch (SQLException e) {
             throw new ServletException(e);

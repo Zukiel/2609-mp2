@@ -15,15 +15,20 @@ public class DashboardServlet extends HttpServlet {
         dbUser = sc.getInitParameter("dbUser");
         dbPass = sc.getInitParameter("dbPassword");
         dbDriver = sc.getInitParameter("dbDriver");
-        try { Class.forName(dbDriver); } catch (Exception e) { e.printStackTrace(); }
+        
+        try {
+            Class.forName(dbDriver);
+        } catch (ClassNotFoundException e) {
+            throw new ServletException("Driver not found", e);
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
-        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+        response.setHeader("Pragma", "no-cache"); 
         response.setDateHeader("Expires", 0);
         
         HttpSession session = request.getSession(false);

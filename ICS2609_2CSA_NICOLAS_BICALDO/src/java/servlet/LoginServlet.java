@@ -52,7 +52,6 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("error_3.jsp");
                     return;
                 }
-                
 
                 String storedPass = rs.getString("password");
                 String role = rs.getString("userrole");
